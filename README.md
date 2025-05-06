@@ -14,4 +14,4 @@ Here you can find a web server configured for sufficiently weak computers for [H
 # Preview
 > Prompt: a car
 > 3d model: ![generated model](https://github.com/Sworroo/MikoBuild-2/blob/main/assets/model.jpg)
-> building: ![generated structure](https://github.com/Sworroo/MikoBuild-2/blob/main/assets/buildling.jpg)
+> building: ![generated structure](https://github.com/Sworroo/MikoBuild-2/blob/main/assets/building.jpg)
