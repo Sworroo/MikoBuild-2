@@ -1,0 +1,15 @@
+name: MikoBuild
+version: 1.0
+main: me.sworroo.MikoBuild
+api-version: 1.12.2
+depend: [WorldEdit]
+commands:
+  miko:
+    description: Generate structures using AI in a WorldEdit region
+    usage: /miko [text description]
+    permission: mikobuild.build
+
+permissions:
+  mikobuild.build:
+    description: Allows using the /miko command
+    default: op

@@ -1,0 +1,22 @@
+plugins {
+    id("java")
+}
+
+repositories{
+    mavenCentral()
+}
+
+group = "me.sworroo"
+version = "1.0-SNAPSHOT"
+
+dependencies {
+    compileOnly fileTree("libs/")
+    implementation('com.squareup.okhttp3:okhttp:4.9.1')
+}
+
+jar {
+    from {
+        configurations.runtimeClasspath.collect { it.directory ? it : zipTree(it) }
+    }
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
+}
