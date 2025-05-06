@@ -6,7 +6,7 @@ The source code of the plug-in that transforms the model into a building within 
 - Server 1.12.2
 - WorldEdit
 
-## server
+## Server
 Here you can find a web server configured for sufficiently weak computers for [Hunyuan3D-2](https://github.com/Tencent/Hunyuan3D-2), it is enough to place this file in the Hunyuan3D-2 working instance and run it.
 #### Requirements:
 - at least 16GB of VRAM
