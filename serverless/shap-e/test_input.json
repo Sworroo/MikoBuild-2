@@ -1,0 +1,7 @@
+{
+    "input": {
+        "prompt": "a red sports car",
+        "guidance_scale": 15.0,
+        "num_steps": 64
+    }
+}

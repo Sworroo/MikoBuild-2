@@ -160,7 +160,7 @@ public class ModelBuilder {
     /**
      * Строит модель в мире Minecraft на основе OBJ и MTL файлов
      */
-    public CompletableFuture<Void> buildFromModel(File modelFile, Location location, Vector dimensions, Consumer<Double> progressCallback) {
+    public CompletableFuture<Void> buildFromModel(File modelFile, Location location, Vector dimensions, Consumer<Double> progressCallback, boolean isNonTextured) {
         CompletableFuture<Void> future = new CompletableFuture<>();
 
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
@@ -339,10 +339,10 @@ public class ModelBuilder {
                     z3 = Math.min(Math.max(z3, 0), regionDepth - 1);
 
                     // Получаем цвет из текстуры для этой грани
-                    Material material = Material.STONE; // По умолчанию
+                    Material material = Material.DIAMOND_BLOCK; // По умолчанию
                     byte data = 0;
 
-                    if (texture != null && texCoords.size() > 0) {
+                    if (texture != null && texCoords.size() > 0 && !isNonTextured) {
                         // Берем среднюю UV-координату для грани
                         float avgU = 0, avgV = 0;
                         for (int j = 0; j < 3; j++) {
@@ -368,9 +368,6 @@ public class ModelBuilder {
                             plugin.getLogger().warning("Ошибка при определении цвета: " + e.getMessage());
                             material = getDefaultMaterialByHeight(y1);
                         }
-                    } else {
-                        // Определение материала на основе высоты
-                        material = getDefaultMaterialByHeight(y1);
                     }
 
                     // Заполняем вокселы
@@ -386,7 +383,6 @@ public class ModelBuilder {
                     materials[x3][y3][z3] = material;
                     dataValues[x3][y3][z3] = data;
 
-                    // Заполняем линии между вершинами для создания сплошной модели
                     fillLine(x1, y1, z1, x2, y2, z2, voxels, materials, dataValues, material, data, regionWidth, regionHeight, regionDepth);
                     fillLine(x2, y2, z2, x3, y3, z3, voxels, materials, dataValues, material, data, regionWidth, regionHeight, regionDepth);
                     fillLine(x3, y3, z3, x1, y1, z1, voxels, materials, dataValues, material, data, regionWidth, regionHeight, regionDepth);

@@ -1,7 +1,7 @@
 package me.sworroo;
 
-import me.sworroo.api.ApiHandler;
 import me.sworroo.commands.BuildCommand;
+import me.sworroo.runpod.RunPodModelGenerator;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
@@ -13,7 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class MikoBuild extends JavaPlugin implements Listener {
 
-    private ApiHandler apiHandler;
+    private RunPodModelGenerator runPodModelGenerator;
     private FileConfiguration config;
 
     @Override
@@ -31,11 +31,13 @@ public class MikoBuild extends JavaPlugin implements Listener {
         config = getConfig();
 
         // Настройка API обработчика
-        String apiUrl = config.getString("api.url", "http://localhost:5000");
-        apiHandler = new ApiHandler(this, apiUrl);
-
+//        apiHandler = new ApiHandler(this, apiUrl);
+        this.runPodModelGenerator = new RunPodModelGenerator(
+                config.getString("api.key", "key"),
+                config.getString("api.endpointId", "endpoint"),
+                this.getDataFolder());
         // Регистрация команды
-        getCommand("miko").setExecutor(new BuildCommand(this, apiHandler));
+        getCommand("miko").setExecutor(new BuildCommand(this, runPodModelGenerator));
 
         Bukkit.getPluginManager().registerEvents(this, this);
 
