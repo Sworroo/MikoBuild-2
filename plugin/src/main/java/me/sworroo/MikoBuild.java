@@ -13,7 +13,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class MikoBuild extends JavaPlugin implements Listener {
 
-    private RunPodModelGenerator runPodModelGenerator;
+    private RunPodModelGenerator basicRunpodModelGenerator;
+    private RunPodModelGenerator extendedRunpodModelGenerator;
     private FileConfiguration config;
 
     @Override
@@ -32,12 +33,16 @@ public class MikoBuild extends JavaPlugin implements Listener {
 
         // Настройка API обработчика
 //        apiHandler = new ApiHandler(this, apiUrl);
-        this.runPodModelGenerator = new RunPodModelGenerator(
-                config.getString("api.key", "key"),
-                config.getString("api.endpointId", "endpoint"),
+        this.basicRunpodModelGenerator = new RunPodModelGenerator(
+                config.getString("api.basic.key", "key"),
+                config.getString("api.basic.endpointId", "endpoint"),
+                this.getDataFolder());
+        this.extendedRunpodModelGenerator = new RunPodModelGenerator(
+                config.getString("api.extended.key", "key"),
+                config.getString("api.extended.endpointId", "endpoint"),
                 this.getDataFolder());
         // Регистрация команды
-        getCommand("miko").setExecutor(new BuildCommand(this, runPodModelGenerator));
+        getCommand("miko").setExecutor(new BuildCommand(this, basicRunpodModelGenerator, extendedRunpodModelGenerator));
 
         Bukkit.getPluginManager().registerEvents(this, this);
 

@@ -18,15 +18,17 @@ import java.util.UUID;
 public class BuildCommand implements CommandExecutor {
 
     private final JavaPlugin plugin;
-    private final RunPodModelGenerator modelGenerator;
+    private final RunPodModelGenerator basicModelGenerator;
+    private final RunPodModelGenerator extendedModelGenerator;
     private final RegionSelector regionSelector;
 
     // Для отслеживания активных генераций (опционально)
     private final Map<UUID, String> activeGenerations = new HashMap<>();
 
-    public BuildCommand(JavaPlugin plugin, RunPodModelGenerator modelGenerator) {
+    public BuildCommand(JavaPlugin plugin, RunPodModelGenerator basicModelGenerator, RunPodModelGenerator extendedModelGenerator) {
         this.plugin = plugin;
-        this.modelGenerator = modelGenerator;
+        this.basicModelGenerator = basicModelGenerator;
+        this.extendedModelGenerator = extendedModelGenerator;
         this.regionSelector = new RegionSelector(plugin);
     }
 
@@ -43,6 +45,11 @@ public class BuildCommand implements CommandExecutor {
         }
 
         Player player = (Player) sender;
+        if(!player.isOp()){
+            player.sendMessage("Недостаточно прав");
+            return false;
+        }
+
         UUID playerId = player.getUniqueId();
 
         // Проверяем, нет ли уже активной генерации у игрока
@@ -63,6 +70,14 @@ public class BuildCommand implements CommandExecutor {
             prompt = prompt.substring(0, prompt.length() - 2);
         } else {
             nonTextured = false;
+        }
+
+        boolean isExtended;
+        if(prompt.endsWith("-e")){
+            isExtended = true;
+            prompt = prompt.substring(0, prompt.length() - 2);
+        } else {
+            isExtended = false;
         }
 
         // Пытаемся получить выделение WorldEdit
@@ -91,7 +106,13 @@ public class BuildCommand implements CommandExecutor {
 
             // Асинхронно запрашиваем генерацию модели
             String finalPrompt = prompt;
-            modelGenerator.generateModel(prompt, guidanceScale, numSteps, false)
+            RunPodModelGenerator runPodModelGenerator;
+            if(isExtended){
+                runPodModelGenerator = this.extendedModelGenerator;
+            }else {
+                runPodModelGenerator = this.basicModelGenerator;
+            }
+            runPodModelGenerator.generateModel(prompt, guidanceScale, numSteps, false)
                     .thenAccept(modelResult -> {
                         // Запуск задачи в основном потоке Bukkit
                         plugin.getServer().getScheduler().runTask(plugin, () -> {
